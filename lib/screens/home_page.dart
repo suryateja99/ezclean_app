@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      'Hi! teja',
+                      'Hi! kothagattu',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
