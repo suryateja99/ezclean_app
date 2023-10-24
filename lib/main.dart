@@ -1,7 +1,9 @@
 
+import 'package:ezwashers_cust/screens/booking_page.dart';
 import 'package:ezwashers_cust/screens/our_services.dart';
 import 'package:ezwashers_cust/screens/pricing.dart';
 import 'package:ezwashers_cust/screens/subscription.dart';
+import 'package:ezwashers_cust/screens/subscription_booking.dart';
 import 'package:ezwashers_cust/screens/subscription_draft.dart';
 
 import '../screens/orderNow_page.dart';
@@ -55,6 +57,7 @@ class MyApp extends StatelessWidget {
         'our_services': (context) => OurServices(),
         'pricing': (context) =>  const Pricing(),
         'Subscription': (context) => Subscription(),
+        'subscription_booking': (context) => const SubscriptionBooking()
       },
 
     );

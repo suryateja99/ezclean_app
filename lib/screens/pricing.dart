@@ -66,6 +66,15 @@ class _PricingState extends State<Pricing> {
           );
         }).toList(),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Add your action here
+          print('Book Now Pressed');
+        },
+        label: Text('Book Now',),
+
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
@@ -120,11 +129,16 @@ class _DropDownItemState extends State<DropDownItem> {
                     );
                   },
                 ),
+
             ],
           ),
+
         ],
+
       ),
+
     );
+
   }
 }
 
