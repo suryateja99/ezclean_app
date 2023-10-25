@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ezwashers_cust/screens/review_form.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -16,23 +17,72 @@ class OrderNow extends StatefulWidget{
 }
 
 class _OrderNowState extends State<OrderNow> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController houseNumberController = TextEditingController();
+  final TextEditingController streetController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController pincodeController = TextEditingController();
 
+  ReviewForm? reviewForm;
   int currentStep = 0;
   continueStep() {
-    if(currentStep ==1){
-      if(_formKey.currentState!.validate()){
+    if (currentStep == 1) {
+      if (_formKey.currentState!.validate()) {
         setState(() {
-          currentStep = currentStep+1;
+          currentStep = currentStep + 1;
+          if (currentStep == 3) {
+            name = nameController.text;
+            phoneNumber = phoneNumberController.text;
+            houseNumber = houseNumberController.text;
+            street = streetController.text;
+            city = cityController.text;
+            pincode = pincodeController.text;
+
+            // Create a ReviewForm object with the selected data
+            reviewForm = ReviewForm(
+              selectedService: getSelectedService(),
+              name: name,
+              phoneNumber: phoneNumber,
+              houseNumber: houseNumber,
+              street: street,
+              city: city,
+              pincode: pincode,
+              selectedDate: _selectedDate,
+              selectedTime: getSelectedTime(),
+            );
+            print("Moving to step 4");
+          }
         });
       }
-    }
-    if (currentStep < 2) {
+    } else if (currentStep < 3) {
       setState(() {
         currentStep = currentStep + 1;
+        print("Moving to the next step: $currentStep");
       });
     }
   }
-    cancelStep(){
+
+
+
+  String getSelectedService() {
+    if (isCheckedWashIron) return 'Wash and Iron';
+    if (isCheckedWashFold) return 'Wash and Fold';
+    if (isCheckedDryClean) return 'Dry Cleaning';
+    if (isCheckedSaree) return 'Saree Rolling';
+    if (isCheckedShoe) return 'Shoe Cleaning';
+    if (isCheckedPremium) return 'Premium Laundry';
+    return '';
+  }
+
+// Helper function to get the selected time slot
+  String getSelectedTime() {
+    if (selectedSlotIndex != null) {
+      return generateTimeSlots(_selectedDate)[selectedSlotIndex!];
+    }
+    return '';
+  }
+  cancelStep(){
       if (currentStep >0){
         setState(() {
           currentStep = currentStep -1;
@@ -97,7 +147,15 @@ onStepTapped(int value){
   }
   int? selectedSlotIndex;
 
-
+  String selectedService = '';
+  String name = '';
+  String phoneNumber = '';
+  String houseNumber = '';
+  String street = '';
+  String city = '';
+  String pincode = '';
+  DateTime selectedDate = DateTime.now();
+  String selectedTime = '';
 
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -237,21 +295,16 @@ bool isCheckedWashIron = false;
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       TextFormField(
+                        controller: nameController,
                         decoration: InputDecoration(labelText: "Enter your Name"),
                         validator: (value){
-                          if(value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value)){
+                          /*if(value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value)){
                             return 'Enter your Name';
                           }else{
                             return null;
-                          }
-                        },
-                      ),
-                      SizedBox(height: Config.screenHeight! * 0.01,),
-                      TextFormField(
-                        decoration: InputDecoration(labelText: "Enter your Phone Number"),
-                        validator: (value){
-                          if(value!.isEmpty || !RegExp(r'^[+]*[(]{0,1}[0-9{1,4}[)]{0,1}[-\s\./0-9]+$').hasMatch(value)){
-                            return 'Enter Phone Number';
+                          }*/
+                          if(value!.isEmpty ){
+                            return 'Name';
                           }else{
                             return null;
                           }
@@ -259,6 +312,24 @@ bool isCheckedWashIron = false;
                       ),
                       SizedBox(height: Config.screenHeight! * 0.01,),
                       TextFormField(
+                        controller: phoneNumberController,
+                        decoration: InputDecoration(labelText: "Enter your Phone Number"),
+                        validator: (value){
+                          /*if(value!.isEmpty || !RegExp(r'^[+]*[(]{0,1}[0-9{1,4}[)]{0,1}[-\s\./0-9]+$').hasMatch(value)){
+                            return 'Phone Number';
+                          }else{
+                            return null;
+                          }*/
+                          if(value!.isEmpty ){
+                            return 'Phone Number';
+                          }else{
+                            return null;
+                          }
+                        },
+                      ),
+                      SizedBox(height: Config.screenHeight! * 0.01,),
+                      TextFormField(
+                        controller: houseNumberController,
                         decoration: InputDecoration(labelText: "House Number"),
                         validator: (value){
                           if(value!.isEmpty ){
@@ -270,6 +341,7 @@ bool isCheckedWashIron = false;
                       ),
                       SizedBox(height: Config.screenHeight! * 0.01,),
                       TextFormField(
+                        controller: streetController,
                         decoration: InputDecoration(labelText: "Street"),
                         validator: (value){
                           if(value!.isEmpty ){
@@ -281,6 +353,7 @@ bool isCheckedWashIron = false;
                       ),
                       SizedBox(height: Config.screenHeight! * 0.01,),
                       TextFormField(
+                        controller: cityController,
                         decoration: InputDecoration(labelText: "City"),
                         validator: (value){
                           if(value!.isEmpty ){
@@ -292,6 +365,7 @@ bool isCheckedWashIron = false;
                       ),
                       SizedBox(height: Config.screenHeight! * 0.01,),
                       TextFormField(
+                        controller: pincodeController,
                         decoration: InputDecoration(labelText: "Pincode"),
                         validator: (value){
                           if(value!.isEmpty ){
@@ -370,6 +444,22 @@ bool isCheckedWashIron = false;
               ),
               isActive: currentStep >= 2,
               state: currentStep >= 2 ? StepState.complete : StepState.disabled,
+            ),
+            Step(
+              title: Text('Step 4'),
+              content: ReviewForm(
+                selectedService: getSelectedService(),
+                name: nameController.text,
+                phoneNumber: phoneNumberController.text,
+                houseNumber: houseNumberController.text,
+                street: streetController.text,
+                city: cityController.text,
+                pincode: pincodeController.text,
+                selectedDate: _selectedDate,
+                selectedTime: getSelectedTime(),
+              ),
+              isActive: currentStep >= 3,
+              state: currentStep >= 3 ? StepState.complete : StepState.disabled,
             ),
 
 

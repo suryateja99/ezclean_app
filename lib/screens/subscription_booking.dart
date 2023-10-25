@@ -22,23 +22,6 @@ class _SubscriptionBookingState extends State<SubscriptionBooking> {
   int? selectedSlotIndex3;
 
   int currentStep = 0;
-  /*void continueStep() {
-    if (currentStep < totalSteps - 1) {
-      if (currentStep == 1 || currentStep == 2 || currentStep == 3) {
-        if (selectedSlotIndex != null) { // Check if a time slot is selected
-          setState(() {
-            currentStep = currentStep + 1;
-          });
-        } else {
-          // Show an error message or handle the case when no time slot is selected
-        }
-      } else if (currentStep < 3) {
-        setState(() {
-          currentStep = currentStep + 1;
-        });
-      }
-    }
-  }*/
    continueStep() {
     if (currentStep < totalSteps - 1) {
       if (currentStep == 1 && selectedSlotIndex != null) {
@@ -103,12 +86,6 @@ class _SubscriptionBookingState extends State<SubscriptionBooking> {
     }
     return false;
   }
-  DateTime _selectedDate = DateTime.now();
-  DateTime _focusedDay = DateTime.now();
-  DateTime _selectedDate2 = DateTime.now();
-  DateTime _focusedDay2 = DateTime.now();
-  DateTime _selectedDate3 = DateTime.now();
-  DateTime _focusedDay3 = DateTime.now();
 
 
   bool isSameDay(DateTime a, DateTime b) {
@@ -149,9 +126,21 @@ class _SubscriptionBookingState extends State<SubscriptionBooking> {
   bool isCheckedShoe = false;
   bool isCheckedSaree = false;
   bool isCheckedPremium = false;
+  List<String> days = [
+    'Mon-Wed-Fri',
+    'Tue-Thu-Sat',
+    // Add more schedule options as needed
+  ];
 
+  List<String> timeSlots = [
+    '9:00 AM - 11:00 AM',
+    '11:00 AM - 1:00 PM',
+    '2:00 PM - 4:00 PM',
+    // Add more time slot options as needed
+  ];
 
-
+  int? selectedDayIndex;
+  int? selectedTimeSlotIndex;
   @override
   Widget build(BuildContext context){
     Config().init(context);
@@ -189,76 +178,7 @@ class _SubscriptionBookingState extends State<SubscriptionBooking> {
                       );
                     },
                   ),
-                  /*CheckboxListTile(
 
-                    title: Text('Wash and Fold'),
-                    value: isCheckedWashFold,
-                    secondary: Container(
-                      height: 50,
-                      width: 50,
-                      child: Image.asset('assets/washandfold.jpeg', fit: BoxFit.cover,),
-                    ),
-                    onChanged: (value){
-                      setState(() => isCheckedWashFold = value!
-                      );
-                    },
-                  ),
-                  CheckboxListTile(
-
-                    title: Text('Dry Cleaning'),
-                    value: isCheckedDryClean,
-                    secondary: Container(
-                      height: 50,
-                      width: 50,
-                      child: Image.asset('assets/dryclean.jpg', fit: BoxFit.cover,),
-                    ),
-                    onChanged: (value){
-                      setState(() => isCheckedDryClean = value!
-                      );
-                    },
-                  ),
-                  CheckboxListTile(
-
-                    title: Text('Saree Rolling'),
-                    value: isCheckedSaree,
-                    secondary: Container(
-                      height: 50,
-                      width: 50,
-                      child: Image.asset('assets/saree.webp', fit: BoxFit.cover,),
-                    ),
-                    onChanged: (value){
-                      setState(() => isCheckedSaree = value!
-                      );
-                    },
-                  ),
-                  CheckboxListTile(
-
-                    title: Text('Shoe Cleaning'),
-                    secondary: Container(
-                      height: 50,
-                      width: 50,
-                      child: Image.asset('assets/shoe.webp', fit: BoxFit.cover,),
-                    ),
-                    value: isCheckedShoe,
-                    onChanged: (value){
-                      setState(() => isCheckedShoe = value!
-                      );
-                    },
-                  ),
-                  CheckboxListTile(
-
-                    title: Text('Premium Laundry'),
-                    value: isCheckedPremium,
-                    secondary: Container(
-                      height: 50,
-                      width: 50,
-                      child: Image.asset('assets/premium.jpg', fit: BoxFit.cover,),
-                    ),
-                    onChanged: (value){
-                      setState(() => isCheckedPremium = value!
-                      );
-                    },
-                  ),*/
                 ],
               ),
               ),
@@ -267,261 +187,150 @@ class _SubscriptionBookingState extends State<SubscriptionBooking> {
             isActive: currentStep >= 0,
             state: isAtleastOneCheckBoxSelected() ? StepState.complete: StepState.disabled,
           ),
-          Step(title: Text('Step 2'),
-            content:
-            Column(
-              children: [
-                TableCalendar(
-                  firstDay: DateTime.utc(2020, 1, 1),  // Adjust this to your desired start date
-                  lastDay: DateTime.utc(2030, 12, 31), // Adjust this to your desired end date
-                  focusedDay: _focusedDay2,
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDate2, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      _selectedDate2 = selectedDay;
-                      _focusedDay2 = focusedDay;
-                      selectedSlotIndex = null;// update the focusedDay
-                    });
-                  },
-                  calendarStyle: const CalendarStyle(
-                    selectedDecoration: BoxDecoration(
-                      color: Config.primaryColor, // Change this to your desired color
-                      shape: BoxShape.circle,
-                    ),
-                    todayDecoration: BoxDecoration(
-                      color: Colors.grey, // Color for today's date
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                // Here, you can add the time slots based on the selected day.
-                // For simplicity, I'm just showing the slots without any conditions.
-                Wrap(
-                  spacing: 10.0,
-                  children: generateTimeSlots(_selectedDate2).asMap().entries.map((entry) {
-                    int idx = entry.key;
-                    String slot = entry.value;
-                    return ChoiceChip(
-                      label: Text(slot),
-                      selected: idx == selectedSlotIndex2, // You can manage the selection state with a variable
-                      onSelected: (selected) {
-                        setState(() {
-                          selectedSlotIndex2 = idx;
-                        });
-                      },
-                      backgroundColor: Colors.grey[300],
-                      selectedColor: Config.primaryColor,
-                      labelStyle: TextStyle(
-                        color: idx == selectedSlotIndex ? Colors.white : Colors.black,
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),/*Container(
-              margin: EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    *//*TextFormField(
-                      decoration: InputDecoration(labelText: "Enter your Name"),
-                      validator: (value){
-                        if(value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value)){
-                          return 'Enter your Name';
-                        }else{
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(height: Config.screenHeight! * 0.01,),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: "Enter your Phone Number"),
-                      validator: (value){
-                        if(value!.isEmpty || !RegExp(r'^[+]*[(]{0,1}[0-9{1,4}[)]{0,1}[-\s\./0-9]+$').hasMatch(value)){
-                          return 'Enter Phone Number';
-                        }else{
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(height: Config.screenHeight! * 0.01,),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: "House Number"),
-                      validator: (value){
-                        if(value!.isEmpty ){
-                          return 'Enter House Number';
-                        }else{
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(height: Config.screenHeight! * 0.01,),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: "Street"),
-                      validator: (value){
-                        if(value!.isEmpty ){
-                          return 'Enter Street Name';
-                        }else{
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(height: Config.screenHeight! * 0.01,),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: "City"),
-                      validator: (value){
-                        if(value!.isEmpty ){
-                          return 'Enter City Name';
-                        }else{
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(height: Config.screenHeight! * 0.01,),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: "Pincode"),
-                      validator: (value){
-                        if(value!.isEmpty ){
-                          return 'Enter Pin code';
-                        }else{
-                          return null;
-                        }
-                      },
-                    ),
-                    SizedBox(height: Config.screenHeight! * 0.01,),*//*
 
-
-
-
-                  ],
-                ),
-              ),
-            ),*/
-            isActive: currentStep >= 1,
-            state: currentStep >=1 ? StepState.complete: StepState.disabled,
-          ),
 
           Step(
-            title: Text('Step 3'),
+            title: const Text('Step 2'),
             content: Column(
               children: [
-                TableCalendar(
-                  firstDay: DateTime.utc(2020, 1, 1),  // Adjust this to your desired start date
-                  lastDay: DateTime.utc(2030, 12, 31), // Adjust this to your desired end date
-                  focusedDay: _focusedDay,
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDate, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      _selectedDate = selectedDay;
-                      _focusedDay = focusedDay;
-                      selectedSlotIndex = null;// update the focusedDay
-                    });
-                  },
-                  calendarStyle: const CalendarStyle(
-                    selectedDecoration: BoxDecoration(
-                      color: Config.primaryColor, // Change this to your desired color
-                      shape: BoxShape.circle,
-                    ),
-                    todayDecoration: BoxDecoration(
-                      color: Colors.grey, // Color for today's date
-                      shape: BoxShape.circle,
-                    ),
+                Text('Select a day schedule:'),
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  children: List<Widget>.generate(
+                    days.length,
+                        (int index) {
+                      return ChoiceChip(
+                        label: Text(days[index]),
+                        selected: index == selectedDayIndex,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            selectedDayIndex = selected ? index : null;
+                          });
+                        },
+                      );
+                    },
                   ),
                 ),
-                SizedBox(height: 20.0),
-                // Here, you can add the time slots based on the selected day.
-                // For simplicity, I'm just showing the slots without any conditions.
+                Text('Select a time slot for your schedule:'),
                 Wrap(
-                  spacing: 10.0,
-                  children: generateTimeSlots(_selectedDate).asMap().entries.map((entry) {
-                    int idx = entry.key;
-                    String slot = entry.value;
-                    return ChoiceChip(
-                      label: Text(slot),
-                      selected: idx == selectedSlotIndex, // You can manage the selection state with a variable
-                      onSelected: (selected) {
-                        setState(() {
-                          selectedSlotIndex = idx;
-                        });
-                      },
-                      backgroundColor: Colors.grey[300],
-                      selectedColor: Config.primaryColor,
-                      labelStyle: TextStyle(
-                        color: idx == selectedSlotIndex ? Colors.white : Colors.black,
-                      ),
-                    );
-                  }).toList(),
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  children: List<Widget>.generate(
+                    timeSlots.length,
+                        (int index) {
+                      return ChoiceChip(
+                        label: Text(timeSlots[index]),
+                        selected: index == selectedTimeSlotIndex,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            selectedTimeSlotIndex = selected ? index : null;
+                          });
+                        },
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
-            isActive: currentStep >= 2,
-            state: currentStep >= 2 ? StepState.complete : StepState.disabled,
+            isActive: currentStep == 0,
+            state: (selectedDayIndex != null && selectedTimeSlotIndex != null) ? StepState.complete : StepState.indexed,
           ),
           Step(
-            title: Text('Step 4'),
+            title: const Text('Step 3'),
             content: Column(
               children: [
-                TableCalendar(
-                  firstDay: DateTime.utc(2020, 1, 1),  // Adjust this to your desired start date
-                  lastDay: DateTime.utc(2030, 12, 31), // Adjust this to your desired end date
-                  focusedDay: _focusedDay,
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDate, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      _selectedDate = selectedDay;
-                      _focusedDay = focusedDay;
-                      selectedSlotIndex = null;// update the focusedDay
-                    });
-                  },
-                  calendarStyle: const CalendarStyle(
-                    selectedDecoration: BoxDecoration(
-                      color: Config.primaryColor, // Change this to your desired color
-                      shape: BoxShape.circle,
-                    ),
-                    todayDecoration: BoxDecoration(
-                      color: Colors.grey, // Color for today's date
-                      shape: BoxShape.circle,
-                    ),
+                Text('Select a day schedule:'),
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  children: List<Widget>.generate(
+                    days.length,
+                        (int index) {
+                      return ChoiceChip(
+                        label: Text(days[index]),
+                        selected: index == selectedDayIndex,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            selectedDayIndex = selected ? index : null;
+                          });
+                        },
+                      );
+                    },
                   ),
                 ),
-                SizedBox(height: 20.0),
-                // Here, you can add the time slots based on the selected day.
-                // For simplicity, I'm just showing the slots without any conditions.
+                Text('Select a time slot for your schedule:'),
                 Wrap(
-                  spacing: 10.0,
-                  children: generateTimeSlots(_selectedDate).asMap().entries.map((entry) {
-                    int idx = entry.key;
-                    String slot = entry.value;
-                    return ChoiceChip(
-                      label: Text(slot),
-                      selected: idx == selectedSlotIndex, // You can manage the selection state with a variable
-                      onSelected: (selected) {
-                        setState(() {
-                          selectedSlotIndex = idx;
-                        });
-                      },
-                      backgroundColor: Colors.grey[300],
-                      selectedColor: Config.primaryColor,
-                      labelStyle: TextStyle(
-                        color: idx == selectedSlotIndex ? Colors.white : Colors.black,
-                      ),
-                    );
-                  }).toList(),
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  children: List<Widget>.generate(
+                    timeSlots.length,
+                        (int index) {
+                      return ChoiceChip(
+                        label: Text(timeSlots[index]),
+                        selected: index == selectedTimeSlotIndex,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            selectedTimeSlotIndex = selected ? index : null;
+                          });
+                        },
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
-            isActive: currentStep >= 2,
-            state: currentStep >= 2 ? StepState.complete : StepState.disabled,
+            isActive: currentStep == 0,
+            state: (selectedDayIndex != null && selectedTimeSlotIndex != null) ? StepState.complete : StepState.indexed,
           ),
+          Step(
+            title: const Text('Step 4'),
+            content: Column(
+              children: [
+                Text('Select a day schedule:'),
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  children: List<Widget>.generate(
+                    days.length,
+                        (int index) {
+                      return ChoiceChip(
+                        label: Text(days[index]),
+                        selected: index == selectedDayIndex,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            selectedDayIndex = selected ? index : null;
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Text('Select a time slot for your schedule:'),
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  children: List<Widget>.generate(
+                    timeSlots.length,
+                        (int index) {
+                      return ChoiceChip(
+                        label: Text(timeSlots[index]),
+                        selected: index == selectedTimeSlotIndex,
+                        onSelected: (bool selected) {
+                          setState(() {
+                            selectedTimeSlotIndex = selected ? index : null;
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+            isActive: currentStep == 0,
+            state: (selectedDayIndex != null && selectedTimeSlotIndex != null) ? StepState.complete : StepState.indexed,
+          ),
+
 
 
         ],
